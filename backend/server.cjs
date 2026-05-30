@@ -1,9 +1,7 @@
-const {app} = require("./app.cjs");
-const {connectDB} = require("./src/db/index.db.cjs");
 const dotenv = require('dotenv');
-
 dotenv.config();
 
+const {connectDB} = require("./src/db/index.db.cjs");
 connectDB()
 .then(() => {
   app.listen(process.env.PORT, () => {
@@ -13,3 +11,5 @@ connectDB()
 .catch((error) => {
     console.log(`App has encountered some error: ${error}`);
 })
+
+const {app} = require("./app.cjs");

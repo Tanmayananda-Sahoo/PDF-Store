@@ -3,7 +3,6 @@ const uploadOnCloudinary = require('../utils/uploadOnCloudinary.utils.cjs');
 
 const viewPdf = async(req,res) => {
     const fetchedPdf = await Pdf.find({});
-    console.log(fetchedPdf);
 
     return res.status(200)
     .json({
@@ -12,8 +11,7 @@ const viewPdf = async(req,res) => {
 }
 
 const viewFilteredPdf = async(req,res) => {
-    const {category} = req.query;
-
+    const {category} = req.params;
     const fetchedPdf = await Pdf.find({category});
 
     return res.status(200)
@@ -39,14 +37,14 @@ const insertPdf = async(req,res) => {
         })
     }
 
-    if(price > 0.0 || price == 0.0) {
+    if(price < 0.0 || price == 0.0) {
         return res.status(400)
         .json({
             message: "Price cannot be less than or equal to zero."
         })
     }
 
-    if(pages > 0 || pages == 0) {
+    if(pages < 0 || pages == 0) {
         return res.status(400)
         .json({
             message: "Pages cannot be less than or equal to zero."
@@ -59,20 +57,32 @@ const insertPdf = async(req,res) => {
 
     const coverImage = await uploadOnCloudinary(coverImageLocalPath);
 
-    const createdPdf = await Pdf({
+    const createdPdf = await Pdf.create({
         title,
         description,
         price,
         category,
         author,
         pages,
-        coverImage
+        coverImage: coverImage?.url || ""
+    })
+
+    return res.status(201)
+    .json({
+        message: "PDF Inserted successfully.",
+        pdf: createdPdf
     })
 }
 
 const viewPdfDetails = async(req,res) => {
-    const {id} = req.query;
+    const {id} = req.params;
     const fetchedPdf = await Pdf.findById(id);
+    if(!fetchedPdf) {
+        return res.status(400)
+        .json({
+            message: "PDF could not be found."
+        })
+    }
 
     return res.status(200)
     .json({

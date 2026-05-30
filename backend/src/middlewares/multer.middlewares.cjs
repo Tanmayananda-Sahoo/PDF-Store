@@ -1,4 +1,4 @@
-import multer from "multer";
+const multer = require('multer');
 
 const storage = multer.diskStorage({   // This method is used to store the user sent file in disk.
     destination: function(req,file,cb) {   //We give destination of the file to be stored using this. We pass a request a file and a callback function. In the callback function we pass the destination of the file to be stored.

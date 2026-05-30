@@ -1,5 +1,6 @@
 const {User} = require('../models/user.models.cjs');
 const { hashPassword } = require('../utils/hashPassword.utils.cjs');
+const jwt = require('jsonwebtoken');
 
 const register = async(req,res) => {
     const {name, email, mobileNo, password} = req.body;
@@ -66,7 +67,6 @@ const register = async(req,res) => {
     })
 }
 
-//Refresh and Access Token to be added.
 const login = async(req,res) => {
 
     const { email, password } = req.body;
@@ -113,14 +113,14 @@ const login = async(req,res) => {
     res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         sameSite: "strict",
-        secure: "true",
+        secure: true,
         maxAge: 7*24*60*60*1000
     })
 
     res.cookie("accessToken", accessToken, {
         httpOnly: true,
         sameSite: "strict",
-        secure: "true",
+        secure: true,
         maxAge: 5*60*1000
     })
 
@@ -141,8 +141,43 @@ const logout = async(req,res) => {
     })
 }
 
+const generateAccessToken = async(req, res) => {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+        return res.status(401).json({
+            message: "Refresh token not found"
+        })
+    }
+
+    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET)
+
+    const accessToken = User.generateAccessToken();
+    const newRefreshToken = User.generateRefreshToken();
+
+    res.cookie("refreshToken", newRefreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: 7*24*60*60*1000
+    })
+    res.cookie("accessToken", accessToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: 5*60*1000 
+    })
+
+    
+    res.status(200).json({
+        message: "Access token refreshed successfully",
+        accessToken
+    })
+}
+
 module.exports = {
     register,
     login,
-    logout
+    logout,
+    generateAccessToken
 }

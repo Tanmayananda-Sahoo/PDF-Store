@@ -11,13 +11,16 @@ const {
 
 const router = express.Router();
 
-router.post('/insert',
+router.route('/insert').post(
     upload.fields([
         {
             name:"coverImage",
             maxCount:1
         }
-    ]), verifyAdmin, insertPdf);
-router.get('/view-pdf', viewPdf);
-router.get('/view-pdf/:category', viewFilteredPdf);
-router.get('/view-details/:id', viewPdfDetails);
+    ]), 
+    verifyAdmin, insertPdf);
+router.route('/view-pdf').get(viewPdf);
+router.route('/view-pdf/:category').get(viewFilteredPdf);
+router.route('/view-details/:id').get(viewPdfDetails);
+
+module.exports = router;

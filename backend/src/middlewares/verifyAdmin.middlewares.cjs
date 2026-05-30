@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const { User } = require('../models/user.models.cjs');
 
 const verifyAdmin = async(req,res,next) => {
-    const token = req.cookies?.accessToken || req.head("Authorization").replace("Bearer ", "");
+    const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "");
     if(!token) {
         return res.status(400)
         .json({
@@ -19,7 +19,7 @@ const verifyAdmin = async(req,res,next) => {
         })
     }
 
-    if(user.name != process.env.ADMIN_USERNAME) {
+    if(user.email != process.env.ADMIN_EMAIL) {
         return res.status(400)
         .json({
             message: "Unauthorized request."
