@@ -21,8 +21,8 @@ const Footer = () => {
     ],
     'Support': [
       { label: 'Help Center', path: '/about' },
-      { label: 'Contact', path: '/about' },
-      { label: 'Refund Policy', path: '/about' },
+      { label: 'Contact', path: '/contact' },
+      { label: 'Refund Policy', path: '/refund-policy' },
       { label: 'FAQ', path: '/about' },
     ],
   };
@@ -111,8 +111,8 @@ const Footer = () => {
           <div className="footer__bottom-inner">
             <p className="text-small">© {currentYear} PageVault. All rights reserved.</p>
             <div className="footer__bottom-links">
-              <a href="#" className="text-small">Privacy Policy</a>
-              <a href="#" className="text-small">Terms of Service</a>
+              <Link to="/privacy-policy" className="text-small">Privacy Policy</Link>
+              <Link to="/terms-of-service" className="text-small">Terms of Service</Link>
               <a href="#" className="text-small">Cookie Settings</a>
             </div>
           </div>
